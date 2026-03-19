@@ -50,7 +50,7 @@ const Footer = () => {
         {/* Bottom Section: Logo + Description */}
         <div className="border-t border-zinc-900 pt-16 flex flex-col md:flex-row gap-12 items-start justify-between">
           <div className="max-w-xs">
-            <h2 className="text-amber-500 text-2xl font-bold mb-8 uppercase tracking-tighter italic">World Best Platform</h2>
+            <h2 className="text-amber-500 text-2xl font-bold mb-8 uppercase tracking-tighter italic">Al Safat Platform</h2>
             <div className="relative w-32 h-32 text-amber-500">
               {/* Styled Building Illustration using SVG for precise match to image */}
               <svg viewBox="0 0 100 100" className="w-full h-full fill-current opacity-80">
