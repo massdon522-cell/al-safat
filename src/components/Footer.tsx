@@ -68,10 +68,10 @@ const Footer = () => {
 
           <div className="max-w-3xl">
             <p className="text-zinc-400 text-base leading-relaxed mb-8">
-              World Best Platform is a unique investment firm that provides investors with exclusive access to high-growth investment opportunities in various markets and a range of services. We follow industry-leading trading practices in Indices, Forex, Commodities, Shares, Options, Stock, and Crypto-Mining as part of our operations, while offering flexible investment plans. Our company thrives on the strength of our extensive network of global clients, which further enhances our capabilities.
+              Al Safat Platform is a unique investment firm that provides investors with exclusive access to high-growth investment opportunities in various markets and a range of services. We follow industry-leading trading practices in Indices, Forex, Commodities, Shares, Options, Stock, and Crypto-Mining as part of our operations, while offering flexible investment plans. Our company thrives on the strength of our extensive network of global clients, which further enhances our capabilities.
             </p>
             <div className="text-zinc-500 text-sm">
-              © {new Date().getFullYear()} World Best Platform
+              © {new Date().getFullYear()} Al Safat Platform
             </div>
           </div>
         </div>

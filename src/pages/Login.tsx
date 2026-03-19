@@ -88,7 +88,7 @@ const Login = () => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full bg-transparent border-2 border-zinc-200 rounded-xl px-6 py-4 text-xl outline-none focus:border-amber-500 transition-colors font-medium"
+              className="w-full bg-transparent text-black border-2 border-zinc-200 rounded-xl px-6 py-4 text-xl outline-none focus:border-amber-500 transition-colors font-medium"
               placeholder=""
               disabled={loading}
             />
