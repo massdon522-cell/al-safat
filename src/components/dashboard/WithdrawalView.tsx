@@ -111,7 +111,7 @@ const WithdrawalView: React.FC<WithdrawalViewProps> = ({ fullName, availableProf
       {/* Withdrawal History Section (Special Styled Box) */}
       <div className="rounded-xl overflow-hidden shadow-2xl border border-amber-500/20">
         <div className="bg-gradient-to-r from-[#1a1a1a] to-[#A6760E] p-8 text-center">
-          <h2 className="text-4xl font-black text-white italic uppercase tracking-widest">
+          <h2 className="text-2xl font-bold text-white italic uppercase tracking-widest">
             Withdrawal History
           </h2>
           <div className="mt-2 text-amber-500 font-bold">
@@ -195,7 +195,7 @@ const WithdrawalView: React.FC<WithdrawalViewProps> = ({ fullName, availableProf
                       <td className="px-4 py-4 text-sm text-white/60 font-mono truncate max-w-[150px]" title={req.details}>
                         {req.details}
                       </td>
-                      <td className="px-4 py-4 text-sm font-black text-white">{symbol}{Number(req.amount).toLocaleString()} {currency}</td>
+                      <td className="px-4 py-4 text-sm font-bold text-white">{symbol}{Number(req.amount).toLocaleString()} {currency}</td>
                       <td className="px-4 py-4 text-sm text-white/80">
                          {new Date(req.created_at).toLocaleDateString('en-US', {
                           month: 'short',

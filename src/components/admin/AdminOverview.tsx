@@ -148,7 +148,7 @@ const AdminOverview = () => {
               {card.icon}
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-white">{card.value}</div>
+              <div className="text-xl font-bold text-white">{card.value}</div>
               <p className="text-xs text-zinc-500 mt-1 uppercase tracking-tighter">
                 {card.description}
               </p>

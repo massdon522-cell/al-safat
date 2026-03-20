@@ -24,7 +24,7 @@ const HowWeOperate = () => (
     <div className="container mx-auto px-4">
       {/* Top Header */}
       <div className="max-w-5xl mx-auto mb-20 text-center lg:text-left">
-        <h2 className="text-4xl md:text-5xl font-bold text-amber-500 leading-tight">
+        <h2 className="text-4xl md:text-xl font-bold text-amber-500 leading-tight">
           Easier than the trading floor.
           <br />
           Harder than pure luck.
@@ -41,7 +41,7 @@ const HowWeOperate = () => (
 
       {/* Section Heading */}
       <div className="text-center mb-12">
-        <h3 className="text-3xl md:text-4xl font-bold text-amber-500 flex items-center justify-center gap-3 italic">
+        <h3 className="text-3xl md:text-2xl font-bold text-amber-500 flex items-center justify-center gap-3 italic">
           How we Operate
           <Wrench className="h-8 w-8" />
         </h3>

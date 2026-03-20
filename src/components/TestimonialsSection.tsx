@@ -14,7 +14,7 @@ const TestimonialsSection = () => (
     <div className="container mx-auto px-4 relative z-10">
       <div className="text-center max-w-3xl mx-auto mb-20">
         <span className="text-amber-500 font-bold uppercase tracking-[0.2em] text-sm italic">Client Stories</span>
-        <h2 className="mt-4 text-4xl md:text-5xl font-black text-white uppercase italic tracking-tighter">
+        <h2 className="mt-4 text-4xl md:text-2xl font-bold text-white uppercase italic tracking-tighter">
           Trusted by <span className="text-amber-500">Industry Leaders</span>
         </h2>
         <div className="w-20 h-1 bg-amber-500 mx-auto mt-6 rounded-full" />

@@ -32,7 +32,7 @@ const ServicesSection = () => (
     <div className="container mx-auto px-4">
       {/* Top Header */}
       <div className="text-center max-w-5xl mx-auto mb-16">
-        <h2 className="text-4xl md:text-5xl font-bold text-amber-500 mb-8">New into the trading space?</h2>
+        <h2 className="text-4xl md:text-xl font-bold text-amber-500 mb-8">New into the trading space?</h2>
         <p className="text-zinc-500 text-lg leading-relaxed">
           Fixed Time is a trading mode offered by the Al Safat Yield Crypto Investment platform, allowing individuals to generate profits by leveraging currency, stocks, indices, ETFs, and the varying exchange rates of other assets. This activity is referred to as trading, with participants being referred to as traders.
         </p>

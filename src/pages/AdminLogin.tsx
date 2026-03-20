@@ -74,7 +74,7 @@ const AdminLogin = () => {
             <ShieldCheck className="h-10 w-10 text-black" />
           </div>
 
-          <h1 className="text-3xl font-black text-white uppercase">
+          <h1 className="text-xl font-bold text-white uppercase">
             Al Safat Admin
           </h1>
 

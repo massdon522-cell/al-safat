@@ -121,7 +121,7 @@ const InvestmentView: React.FC<InvestmentViewProps> = ({ fullName, availableBala
 
       {/* Investment History Table */}
       <div className="space-y-6">
-        <h2 className="text-3xl font-bold text-center text-[#1a1a1a] mb-8">Investment History</h2>
+        <h2 className="text-xl font-bold text-center text-[#1a1a1a] mb-8">Investment History</h2>
         
         <div className="bg-white rounded-xl shadow-sm border border-black/5 overflow-hidden">
           {/* Table Controls */}
@@ -203,7 +203,7 @@ const InvestmentView: React.FC<InvestmentViewProps> = ({ fullName, availableBala
                       <td className="px-6 py-4 text-sm font-bold text-zinc-900 uppercase">
                         {inv.investment_plans?.name}
                       </td>
-                      <td className="px-6 py-4 text-sm font-black text-black">
+                      <td className="px-6 py-4 text-sm font-bold text-black">
                         {symbol}{Number(inv.amount).toLocaleString()} {currency}
                       </td>
                       <td className="px-6 py-4 text-sm text-zinc-900">

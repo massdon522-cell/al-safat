@@ -6,7 +6,7 @@ const ReferralSection = () => (
       <div className="grid lg:grid-cols-2 gap-12 items-center">
         {/* Text Content */}
         <div className="text-center lg:text-left">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-amber-500 leading-tight mb-6 uppercase italic tracking-tighter flex flex-wrap items-center justify-center lg:justify-start gap-4">
+          <h2 className="text-4xl md:text-5xl lg:text-2xl font-bold text-amber-500 leading-tight mb-6 uppercase italic tracking-tighter flex flex-wrap items-center justify-center lg:justify-start gap-4">
             TACTICAL REFERAL ALTERNATIVE TO EARN SOME COOL CASH
             <div className="flex gap-2">
               <Wallet2 className="h-10 w-10 text-amber-500 animate-bounce" />

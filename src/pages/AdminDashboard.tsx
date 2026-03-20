@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { toast } from "sonner";
+import TranslationSwitcher from "@/components/TranslationSwitcher";
 
 // Import Admin View Components
 import AdminOverview from "@/components/admin/AdminOverview";
@@ -31,10 +32,10 @@ import AdminInvestmentManagement from "@/components/admin/AdminInvestmentManagem
 import AdminAuditLogs from "@/components/admin/AdminAuditLogs";
 import AdminCurrencyManagement from "@/components/admin/AdminCurrencyManagement";
 import AdminDepositMethodManagement from "@/components/admin/AdminDepositMethodManagement";
-import AdminKYCManagement from "../components/admin/AdminKYCManagement";
+
 import AdminWithdrawalCodeManagement from "@/components/admin/AdminWithdrawalCodeManagement";
 
-type AdminTab = 'overview' | 'users' | 'deposits' | 'withdrawals' | 'investments' | 'currencies' | 'deposit_methods' | 'logs' | 'kyc' | 'withdrawal_codes';
+type AdminTab = 'overview' | 'users' | 'deposits' | 'withdrawals' | 'investments' | 'currencies' | 'deposit_methods' | 'logs' | 'withdrawal_codes';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -66,7 +67,7 @@ const AdminDashboard = () => {
     { id: 'investments' as AdminTab, label: 'Investments', icon: TrendingUp },
     { id: 'currencies' as AdminTab, label: 'Platform Currencies', icon: Coins },
     { id: 'deposit_methods' as AdminTab, label: 'Deposit Methods', icon: ClipboardList },
-    { id: 'kyc' as AdminTab, label: 'KYC Verification', icon: ShieldCheck },
+
     { id: 'logs' as AdminTab, label: 'Audit Logs', icon: ClipboardList },
   ];
 
@@ -80,7 +81,7 @@ const AdminDashboard = () => {
       case 'investments': return <AdminInvestmentManagement />;
       case 'currencies': return <AdminCurrencyManagement />;
       case 'deposit_methods': return <AdminDepositMethodManagement />;
-      case 'kyc': return <AdminKYCManagement />;
+
       case 'logs': return <AdminAuditLogs />;
       default: return <AdminOverview />;
     }
@@ -103,7 +104,7 @@ const AdminDashboard = () => {
           <ShieldCheck className="h-6 w-6 text-black" />
         </div>
         <div>
-          <h1 className="text-xl font-black text-white italic uppercase tracking-tighter leading-none">
+          <h1 className="text-xl font-bold text-white italic uppercase tracking-tighter leading-none">
             Al Safat
           </h1>
           <span className="text-[10px] text-amber-500 font-bold uppercase tracking-widest">Admin Control</span>
@@ -179,9 +180,12 @@ const AdminDashboard = () => {
       {/* Mobile Header & Content */}
       <div className="flex-1 flex flex-col min-w-0">
         <header className="lg:hidden flex items-center justify-between p-6 bg-zinc-950 border-b border-white/5">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="h-6 w-6 text-amber-500" />
-            <h1 className="text-lg font-black italic uppercase tracking-tighter">Al Safat</h1>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-6 w-6 text-amber-500" />
+              <h1 className="text-lg font-black italic uppercase tracking-tighter">Al Safat</h1>
+            </div>
+            <TranslationSwitcher />
           </div>
           {/* Mobile Menu Trigger & Content - ONLY MOURNED ON MOBILE */}
           {!isDesktop && (
@@ -201,13 +205,18 @@ const AdminDashboard = () => {
         </header>
 
         <main className="flex-1 p-6 lg:p-10 max-w-7xl mx-auto w-full">
-          <div className="mb-10">
-            <h2 className="text-3xl lg:text-4xl font-black text-white italic uppercase tracking-tighter mb-2">
-              {navItems.find(i => i.id === activeTab)?.label}
-            </h2>
-            <p className="text-zinc-500 text-sm italic">
-              Platform Administration & System Control Center
-            </p>
+          <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-bold text-white italic uppercase tracking-tighter mb-2">
+                {navItems.find(i => i.id === activeTab)?.label}
+              </h2>
+              <p className="text-zinc-500 text-sm italic">
+                Platform Administration & System Control Center
+              </p>
+            </div>
+            <div className="hidden lg:block">
+              <TranslationSwitcher />
+            </div>
           </div>
 
           <div className="bg-transparent">

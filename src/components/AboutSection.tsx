@@ -15,7 +15,7 @@ const AboutSection = () => (
         <div className="aspect-square rounded-3xl bg-gradient-to-tr from-amber-500/20 via-zinc-900 to-black p-1">
           <div className="w-full h-full rounded-[1.4rem] bg-zinc-900 flex items-center justify-center overflow-hidden relative">
             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80')] bg-cover bg-center mix-blend-overlay opacity-40 group-hover:scale-110 transition-transform duration-[10s]" />
-            <span className="text-6xl font-black text-amber-500/10 italic select-none">AL SAFAT</span>
+            <span className="text-2xl font-bold text-amber-500/10 italic select-none">AL SAFAT</span>
           </div>
         </div>
         {/* Dynamic accents */}
@@ -50,17 +50,17 @@ const AboutSection = () => (
         
         <div className="mt-12 flex items-center gap-8 border-t border-white/5 pt-10">
           <div>
-            <p className="text-3xl font-black text-white italic">500+</p>
+            <p className="text-xl font-bold text-white italic">500+</p>
             <p className="text-sm text-zinc-500 uppercase tracking-widest font-bold">Clients</p>
           </div>
           <div className="w-px h-10 bg-white/10" />
           <div>
-            <p className="text-3xl font-black text-white italic">10+</p>
+            <p className="text-xl font-bold text-white italic">10+</p>
             <p className="text-sm text-zinc-500 uppercase tracking-widest font-bold">Years</p>
           </div>
           <div className="w-px h-10 bg-white/10" />
           <div>
-            <p className="text-3xl font-black text-white italic">100%</p>
+            <p className="text-xl font-bold text-white italic">100%</p>
             <p className="text-sm text-zinc-500 uppercase tracking-widest font-bold">Success</p>
           </div>
         </div>

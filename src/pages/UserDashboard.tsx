@@ -11,7 +11,7 @@ import WithdrawalView from "../components/dashboard/WithdrawalView";
 import InvestmentView from "../components/dashboard/InvestmentView";
 import ReferralView from "../components/dashboard/ReferralView";
 import SettingsView from "../components/dashboard/SettingsView";
-import KYCModal from "../components/dashboard/KYCModal";
+
 import { 
   Wallet, 
   ArrowDownLeft, 
@@ -63,7 +63,7 @@ const UserDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [isKYCModalOpen, setIsKYCModalOpen] = useState(false);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -173,38 +173,7 @@ const UserDashboard = () => {
 
   const renderActiveView = () => {
     // KYC Guard: Block everything except Dashboard and Settings if not verified
-    const isRestricted = kycStatus !== 'verified';
-    
-    if (isRestricted && activeTab !== "dashboard" && activeTab !== "settings") {
-      return (
-        <main className="p-8 md:p-12 max-w-7xl animate-in fade-in zoom-in duration-500">
-          <div className="bg-white rounded-3xl p-12 shadow-2xl shadow-black/5 border border-black/5 text-center space-y-6">
-            <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <ShieldAlert className="h-10 w-10 text-amber-500" />
-            </div>
-            <h2 className="text-3xl font-black text-black italic uppercase tracking-tighter">Verification Required</h2>
-            <p className="text-zinc-500 max-w-md mx-auto font-medium">
-              To ensure the security of your account and comply with global financial regulations, you must complete your Identity Verification (KYC) before accessing this feature.
-            </p>
-            <div className="pt-4 flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                onClick={() => setIsKYCModalOpen(true)}
-                className="bg-amber-500 hover:bg-amber-600 text-black font-black uppercase rounded-2xl h-12 px-8 shadow-[0_0_20px_rgba(245,158,11,0.2)]"
-              >
-                Start Verification
-              </Button>
-              <Button 
-                variant="outline"
-                onClick={() => setActiveTab("dashboard")}
-                className="border-black/10 hover:bg-black/5 font-black uppercase rounded-2xl h-12 px-8"
-              >
-                Back to Overview
-              </Button>
-            </div>
-          </div>
-        </main>
-      );
-    }
+    const isRestricted = false;
 
     switch (activeTab) {
       case "deposit":
@@ -221,59 +190,7 @@ const UserDashboard = () => {
       default:
         return (
           <main className="p-8 md:p-12 max-w-7xl animate-in fade-in duration-700 space-y-8">
-             {/* KYC Status Banner */}
-             {kycStatus === 'pending' && (
-               <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-2xl flex items-center justify-between gap-4 animate-pulse">
-                 <div className="flex items-center gap-3">
-                   <ShieldQuestion className="h-6 w-6 text-amber-500" />
-                   <div>
-                     <p className="text-amber-900 font-black uppercase text-xs tracking-widest">Verification Pending</p>
-                     <p className="text-amber-700 text-[10px] font-bold">Your documents are currently being reviewed by our compliance team.</p>
-                   </div>
-                 </div>
-                 <div className="bg-amber-500 text-black text-[10px] font-black px-3 py-1 rounded-full uppercase">Reviewing</div>
-               </div>
-             )}
 
-             {kycStatus === 'unverified' && (
-               <div className="bg-zinc-900 p-6 rounded-3xl border border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl shadow-amber-500/10">
-                 <div className="flex items-center gap-4">
-                   <div className="h-12 w-12 bg-amber-500 rounded-2xl flex items-center justify-center rotate-3 group-hover:rotate-0 transition-transform">
-                     <ShieldAlert className="h-6 w-6 text-black" />
-                   </div>
-                   <div>
-                     <h3 className="text-white font-black italic uppercase tracking-tighter">Complete Your KYC</h3>
-                     <p className="text-zinc-500 text-xs font-bold">Unlock deposits, withdrawals, and premium investments.</p>
-                   </div>
-                 </div>
-                 <Button 
-                   onClick={() => setIsKYCModalOpen(true)}
-                   className="bg-amber-500 hover:bg-amber-600 text-black font-black uppercase rounded-xl h-10 px-6"
-                 >
-                   Verify Now
-                 </Button>
-               </div>
-             )}
-
-             {kycStatus === 'rejected' && (
-               <div className="bg-red-500/10 border border-red-500/20 p-6 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-6">
-                 <div className="flex items-center gap-4">
-                   <div className="h-12 w-12 bg-red-500 rounded-2xl flex items-center justify-center">
-                     <AlertTriangle className="h-6 w-6 text-white" />
-                   </div>
-                   <div>
-                     <h3 className="text-red-900 font-black italic uppercase tracking-tighter text-lg">Verification Rejected</h3>
-                     <p className="text-red-700 text-xs font-bold">Please check your email or contact support for more details.</p>
-                   </div>
-                 </div>
-                 <Button 
-                   onClick={() => setIsKYCModalOpen(true)}
-                   className="bg-red-500 hover:bg-red-600 text-white font-black uppercase rounded-xl h-10 px-6"
-                 >
-                   Try Again
-                 </Button>
-               </div>
-             )}
 
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {cards.map((card, idx) => (
@@ -324,10 +241,7 @@ const UserDashboard = () => {
 
         {renderActiveView()}
         
-        <KYCModal 
-          isOpen={isKYCModalOpen} 
-          onClose={() => setIsKYCModalOpen(false)} 
-        />
+
       </div>
     </div>
   );

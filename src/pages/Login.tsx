@@ -74,7 +74,7 @@ const Login = () => {
         <div className="flex flex-col items-center">
           <div className="flex items-center gap-2 text-amber-600 mb-2">
             <LogIn className="w-10 h-10" />
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">Account Login</h2>
+            <h2 className="text-4xl md:text-2xl font-boldold tracking-tight">Account Login</h2>
           </div>
           <p className="text-zinc-500 font-medium text-xl mb-12">Login into your account here!</p>
         </div>

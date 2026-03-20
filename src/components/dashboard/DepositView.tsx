@@ -125,7 +125,7 @@ const DepositView: React.FC<DepositViewProps> = ({ fullName, currency, symbol })
 
       {/* Deposit History Table */}
       <div className="space-y-6">
-        <h2 className="text-3xl font-bold text-center text-[#1a1a1a] mb-8">Deposit History</h2>
+        <h2 className="text-xl font-bold text-center text-[#1a1a1a] mb-8">Deposit History</h2>
         
         <div className="bg-white rounded-xl shadow-sm border border-black/5 overflow-hidden">
           {/* Table Controls */}
@@ -212,7 +212,7 @@ const DepositView: React.FC<DepositViewProps> = ({ fullName, currency, symbol })
                       <td className="px-6 py-4 text-sm font-mono text-zinc-600 truncate max-w-[200px]" title={req.payer_address}>
                         {req.payer_address}
                       </td>
-                      <td className="px-6 py-4 text-sm font-black text-black">
+                      <td className="px-6 py-4 text-sm font-bold text-black">
                         {symbol}{Number(req.amount).toLocaleString()} {currency}
                       </td>
                       <td className="px-6 py-4 text-sm text-zinc-900">

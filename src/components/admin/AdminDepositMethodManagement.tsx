@@ -153,7 +153,7 @@ const AdminDepositMethodManagement = () => {
         </div>
         <Button 
           onClick={() => setIsModalOpen(true)}
-          className="bg-emerald-500 hover:bg-emerald-600 text-black font-black uppercase rounded-xl gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 transition-all relative z-10"
+          className="bg-emerald-500 hover:bg-emerald-600 text-black font-bold uppercase rounded-xl gap-2 shadow-lg shadow-emerald-500/20 active:scale-95 transition-all relative z-10"
         >
           <Plus className="h-4 w-4" /> Add New Method
         </Button>
@@ -166,7 +166,7 @@ const AdminDepositMethodManagement = () => {
         }}>
           <DialogContent className="bg-zinc-950 border-white/10 text-white max-w-md rounded-3xl">
             <DialogHeader>
-              <DialogTitle className="text-2xl font-black text-amber-500 italic uppercase">
+              <DialogTitle className="text-2xl font-bold text-amber-500 italic uppercase">
                 {editingMethod ? "Edit Method" : "New Deposit Method"}
               </DialogTitle>
             </DialogHeader>
@@ -214,7 +214,7 @@ const AdminDepositMethodManagement = () => {
               </div>
               <Button
                 type="submit"
-                className="w-full bg-amber-500 hover:bg-amber-600 text-black font-black uppercase rounded-xl h-12"
+                className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold uppercase rounded-xl h-12"
                 disabled={processing}
               >
                 {processing ? <Loader2 className="h-4 w-4 animate-spin" /> : editingMethod ? "Update Method" : "Add Method"}
@@ -248,7 +248,7 @@ const AdminDepositMethodManagement = () => {
                 <TableCell>
                   <button
                     onClick={() => toggleStatus(method.id, method.is_active)}
-                    className={`flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${
+                    className={`flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${
                       method.is_active 
                         ? "bg-emerald-500/10 text-emerald-500 border border-emerald-500/20" 
                         : "bg-red-500/10 text-red-500 border border-red-500/20"

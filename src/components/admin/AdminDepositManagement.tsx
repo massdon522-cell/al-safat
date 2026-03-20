@@ -162,7 +162,7 @@ const AdminDepositManagement = () => {
         </div>
         <div className="bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-xl">
           <p className="text-xs text-emerald-500 font-bold uppercase tracking-widest leading-none">Status</p>
-          <p className="text-xl font-black text-emerald-500">{requests.filter(r => r.status === 'pending').length} Pending</p>
+          <p className="text-xl font-bold text-emerald-500">{requests.filter(r => r.status === 'pending').length} Pending</p>
         </div>
       </div>
 
@@ -195,7 +195,7 @@ const AdminDepositManagement = () => {
                   <p className="text-xs text-zinc-400 font-mono truncate">{request.payer_address}</p>
                 </TableCell>
                 <TableCell>
-                  <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-widest ${request.status === 'pending' ? "bg-amber-500/20 text-amber-500" :
+                  <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${request.status === 'pending' ? "bg-amber-500/20 text-amber-500" :
                       request.status === 'approved' ? "bg-emerald-500/20 text-emerald-500" :
                         "bg-red-500/20 text-red-500"
                     }`}>
@@ -215,7 +215,7 @@ const AdminDepositManagement = () => {
                       </DialogTrigger>
                       <DialogContent className="bg-zinc-950 border-white/10 text-white max-w-md p-8 rounded-3xl">
                         <DialogHeader>
-                          <DialogTitle className="text-2xl font-black text-amber-500 italic uppercase">
+                          <DialogTitle className="text-2xl font-bold text-amber-500 italic uppercase">
                             Process Deposit
                           </DialogTitle>
                         </DialogHeader>
@@ -257,7 +257,7 @@ const AdminDepositManagement = () => {
                               {processing === request.id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Reject"}
                             </Button>
                             <Button
-                              className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-black font-black uppercase rounded-xl"
+                              className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-black font-bold uppercase rounded-xl"
                               onClick={() => handleAction('approved')}
                               disabled={processing !== null}
                             >

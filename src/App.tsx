@@ -13,6 +13,7 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import TranslationSwitcher from "./components/TranslationSwitcher";
+import ChatbotAssistant from "./components/ChatbotAssistant";
 
 const queryClient = new QueryClient();
 
@@ -20,7 +21,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
-        <TranslationSwitcher />
+        <ChatbotAssistant />
         <Toaster />
         <Sonner />
         <BrowserRouter>

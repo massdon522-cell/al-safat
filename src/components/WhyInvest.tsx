@@ -41,7 +41,7 @@ const WhyInvest = () => (
       <div className="grid lg:grid-cols-2 gap-16 items-center">
         {/* Left Content */}
         <div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-[1.1] mb-8 uppercase italic tracking-tighter">
+          <h2 className="text-4xl md:text-5xl lg:text-2xl font-bold text-white leading-[1.1] mb-8 uppercase italic tracking-tighter">
             We Are The Best And <span className="text-amber-500">That's Why You</span> Should Invest With Us
           </h2>
           <p className="text-zinc-300 text-lg leading-relaxed mb-10 max-w-xl">

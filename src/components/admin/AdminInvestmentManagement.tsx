@@ -260,7 +260,7 @@ const AdminInvestmentManagement = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                       <span className="font-black text-white/80 uppercase">{inv.investment_plans?.name}</span>
+                       <span className="font-bold text-white/80 uppercase">{inv.investment_plans?.name}</span>
                     </TableCell>
                     <TableCell className="font-mono text-emerald-500 font-bold">
                        ${inv.amount.toLocaleString()}
@@ -282,7 +282,7 @@ const AdminInvestmentManagement = () => {
                            {processing === inv.id ? <Loader2 className="h-3 w-3 animate-spin" /> : "Release"}
                          </Button>
                        ) : (
-                         <div className="flex items-center justify-end gap-1 text-emerald-500 font-black uppercase text-[10px]">
+                         <div className="flex items-center justify-end gap-1 text-emerald-500 font-bold uppercase text-[10px]">
                             <CheckCircle2 className="h-3 w-3" /> Done
                          </div>
                        )}
@@ -318,7 +318,7 @@ const AdminInvestmentManagement = () => {
                   </DialogTrigger>
                   <DialogContent className="bg-zinc-950 border-white/10 text-white sm:max-w-[425px]">
                     <DialogHeader>
-                      <DialogTitle className="text-xl font-black italic uppercase tracking-tighter">
+                      <DialogTitle className="text-xl font-bold italic uppercase tracking-tighter">
                         {editingPlan?.id ? 'Modify Plan' : 'Create New Cycle'}
                       </DialogTitle>
                     </DialogHeader>
@@ -376,7 +376,7 @@ const AdminInvestmentManagement = () => {
                       <Button 
                         type="submit" 
                         disabled={isSavingPlan}
-                        className="w-full bg-amber-500 hover:bg-amber-600 text-black font-black uppercase rounded-xl mt-4"
+                        className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold uppercase rounded-xl mt-4"
                       >
                         {isSavingPlan ? <Loader2 className="h-4 w-4 animate-spin" /> : (editingPlan?.id ? 'Update Configuration' : 'Deploy Plan')}
                       </Button>
@@ -410,9 +410,9 @@ const AdminInvestmentManagement = () => {
                        </Button>
                     </div>
                     <div className="space-y-1">
-                       <h4 className="text-xs font-black text-amber-500 uppercase tracking-widest">{plan.name}</h4>
+                       <h4 className="text-xs font-bold text-amber-500 uppercase tracking-widest">{plan.name}</h4>
                        <div className="flex items-end gap-1">
-                          <span className="text-2xl font-black text-white">{plan.return_percentage}%</span>
+                          <span className="text-2xl font-bold text-white">{plan.return_percentage}%</span>
                           <span className="text-zinc-500 text-[10px] mb-1">ROI / {plan.duration_days}D</span>
                        </div>
                     </div>

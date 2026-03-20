@@ -177,7 +177,6 @@ const AdminUserManagement = () => {
           phone: editingUser.phone,
           country: editingUser.country,
           status: editingUser.status,
-          kyc_status: editingUser.kyc_status,
           currency: editingUser.currency
         })
         .eq('id', editingUser.id);
@@ -364,7 +363,7 @@ const AdminUserManagement = () => {
         <DialogContent className="bg-zinc-950 border-white/10 text-white max-w-2xl p-0 rounded-3xl overflow-hidden shadow-2xl">
           <div className="overflow-y-auto max-h-[85vh]">
             <DialogHeader className="p-8 bg-gradient-to-r from-zinc-900 to-amber-900/20 border-b border-white/5">
-              <DialogTitle className="text-3xl font-black text-amber-500 italic uppercase tracking-tighter flex items-center gap-3">
+              <DialogTitle className="text-xl font-bold text-amber-500 italic uppercase tracking-tighter flex items-center gap-3">
                 <Edit className="h-8 w-8" /> Edit Account
               </DialogTitle>
               <p className="text-zinc-500 text-sm mt-1">Manage core profile, governance settings, and live balances.</p>
@@ -450,23 +449,7 @@ const AdminUserManagement = () => {
                         </SelectContent>
                       </Select>
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-zinc-400 text-[10px] uppercase font-bold tracking-wider">KYC Compliance</Label>
-                      <Select 
-                        value={editingUser.kyc_status} 
-                        onValueChange={(val) => setEditingUser({...editingUser, kyc_status: val})}
-                      >
-                        <SelectTrigger className="bg-zinc-900 border-white/5 font-bold h-11">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-zinc-950 border-white/10 text-white">
-                          <SelectItem value="unverified">UNVERIFIED</SelectItem>
-                          <SelectItem value="pending" className="text-amber-500">PENDING</SelectItem>
-                          <SelectItem value="verified" className="text-emerald-500">VERIFIED</SelectItem>
-                          <SelectItem value="rejected" className="text-red-500">REJECTED</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+
                   </div>
                 </div>
 

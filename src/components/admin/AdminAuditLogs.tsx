@@ -147,7 +147,7 @@ const AdminAuditLogs = () => {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span className="px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-widest bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                  <span className="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest bg-amber-500/10 text-amber-500 border border-amber-500/20">
                     {log.action}
                   </span>
                 </TableCell>
@@ -166,7 +166,7 @@ const AdminAuditLogs = () => {
                     </DialogTrigger>
                     <DialogContent className="bg-zinc-950 border-white/10 text-white max-w-2xl p-8 rounded-3xl overflow-y-auto max-h-[80vh]">
                       <DialogHeader>
-                        <DialogTitle className="text-2xl font-black text-amber-500 italic uppercase flex items-center gap-2">
+                        <DialogTitle className="text-2xl font-bold text-amber-500 italic uppercase flex items-center gap-2">
                            Log Investigation <ClipboardList className="h-6 w-6" />
                         </DialogTitle>
                       </DialogHeader>
@@ -184,7 +184,7 @@ const AdminAuditLogs = () => {
 
                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                               <p className="text-red-500/70 font-black uppercase text-[10px] tracking-widest">
+                               <p className="text-red-500/70 font-bold uppercase text-[10px] tracking-widest">
                                   Original State
                                </p>
                                <pre className="bg-black/50 p-4 rounded-xl border border-red-500/10 text-[10px] font-mono whitespace-pre-wrap text-red-100 overflow-x-auto">
@@ -192,7 +192,7 @@ const AdminAuditLogs = () => {
                                </pre>
                             </div>
                             <div className="space-y-2">
-                               <p className="text-emerald-500/70 font-black uppercase text-[10px] tracking-widest">
+                               <p className="text-emerald-500/70 font-bold uppercase text-[10px] tracking-widest">
                                   New State <ArrowRight className="inline h-3 w-3" />
                                </p>
                                <pre className="bg-black/50 p-4 rounded-xl border border-emerald-500/10 text-[10px] font-mono whitespace-pre-wrap text-emerald-100 overflow-x-auto">

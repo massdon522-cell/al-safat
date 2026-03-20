@@ -25,7 +25,7 @@ const ContactSection = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center max-w-3xl mx-auto mb-20">
           <span className="text-amber-500 font-bold uppercase tracking-[0.2em] text-sm italic">Reach Out</span>
-          <h2 className="mt-4 text-4xl md:text-5xl font-black text-white uppercase italic tracking-tighter">
+          <h2 className="mt-4 text-4xl md:text-2xl font-bold text-white uppercase italic tracking-tighter">
             Let's Start a <span className="text-amber-500">Conversation</span>
           </h2>
           <div className="w-20 h-1 bg-amber-500 mx-auto mt-6 rounded-full" />
@@ -74,7 +74,7 @@ const ContactSection = () => {
               </div>
               <Input placeholder="Subject" className="bg-white/5 border-white/10 text-white placeholder:text-zinc-600 focus:border-amber-500 focus:ring-amber-500 h-14" required />
               <Textarea placeholder="Your message..." rows={5} className="bg-white/5 border-white/10 text-white placeholder:text-zinc-600 focus:border-amber-500 focus:ring-amber-500 text-base" required />
-              <Button type="submit" size="lg" className="w-full bg-amber-500 hover:bg-amber-600 text-black font-black text-lg h-16 uppercase italic" disabled={loading}>
+              <Button type="submit" size="lg" className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold text-lg h-16 uppercase italic" disabled={loading}>
                 {loading ? "Sending..." : "Send Message"}
               </Button>
             </form>

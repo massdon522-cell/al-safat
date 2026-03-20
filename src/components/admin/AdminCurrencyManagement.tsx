@@ -165,7 +165,7 @@ const AdminCurrencyManagement = () => {
             setFormData({ code: "", name: "", symbol: "", is_active: true });
             setIsAddModalOpen(true);
           }}
-          className="bg-amber-500 hover:bg-amber-600 text-black font-black uppercase tracking-widest rounded-xl px-6 h-11"
+          className="bg-amber-500 hover:bg-amber-600 text-black font-bold uppercase tracking-widest rounded-xl px-6 h-11"
         >
           <Plus className="h-5 w-5 mr-2" /> Add Currency
         </Button>
@@ -185,7 +185,7 @@ const AdminCurrencyManagement = () => {
           <TableBody>
             {currencies.map((currency) => (
               <TableRow key={currency.id} className="border-white/5 hover:bg-white/5 transition-colors group">
-                <TableCell className="font-black text-amber-500 uppercase tracking-widest">{currency.code}</TableCell>
+                <TableCell className="font-bold text-amber-500 uppercase tracking-widest">{currency.code}</TableCell>
                 <TableCell className="text-white font-medium">{currency.name}</TableCell>
                 <TableCell className="text-white font-mono">{currency.symbol}</TableCell>
                 <TableCell>
@@ -245,7 +245,7 @@ const AdminCurrencyManagement = () => {
       }}>
         <DialogContent className="bg-zinc-950 border-white/10 text-white rounded-3xl overflow-hidden shadow-2xl p-0 max-w-md">
           <DialogHeader className="p-8 bg-gradient-to-r from-zinc-900 to-amber-900/20 border-b border-white/5">
-            <DialogTitle className="text-2xl font-black text-amber-500 italic uppercase tracking-tighter flex items-center gap-3">
+            <DialogTitle className="text-2xl font-bold text-amber-500 italic uppercase tracking-tighter flex items-center gap-3">
               {isAddModalOpen ? <Plus className="h-6 w-6" /> : <Edit className="h-6 w-6" />}
               {isAddModalOpen ? 'Add Currency' : 'Edit Currency'}
             </DialogTitle>
@@ -264,7 +264,7 @@ const AdminCurrencyManagement = () => {
                   required
                   value={formData.code}
                   onChange={(e) => setFormData({...formData, code: e.target.value.toUpperCase()})}
-                  className="bg-zinc-900 border-white/5 focus:border-amber-500/50 h-11 transition-all uppercase font-black tracking-widest"
+                  className="bg-zinc-900 border-white/5 focus:border-amber-500/50 h-11 transition-all uppercase font-bold tracking-widest"
                   placeholder="USD"
                   maxLength={3}
                 />
@@ -325,7 +325,7 @@ const AdminCurrencyManagement = () => {
               <Button 
                 type="submit" 
                 disabled={submitting}
-                className="flex-[2] bg-amber-500 hover:bg-amber-600 text-black font-black uppercase tracking-widest rounded-xl h-11 shadow-xl shadow-amber-500/20 transition-all border-none"
+                className="flex-[2] bg-amber-500 hover:bg-amber-600 text-black font-bold uppercase tracking-widest rounded-xl h-11 shadow-xl shadow-amber-500/20 transition-all border-none"
               >
                 {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : (isAddModalOpen ? "Register Currency" : "Save Changes")}
               </Button>

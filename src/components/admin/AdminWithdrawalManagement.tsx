@@ -162,7 +162,7 @@ const AdminWithdrawalManagement = () => {
            <p className={`text-xs font-bold uppercase tracking-widest leading-none ${
              pendingCount > 0 ? "text-red-500" : "text-emerald-500"
            }`}>Pending Queue</p>
-           <p className={`text-xl font-black ${
+           <p className={`text-xl font-bold ${
              pendingCount > 0 ? "text-red-500" : "text-emerald-500"
            }`}>{pendingCount} Requests</p>
         </div>
@@ -197,7 +197,7 @@ const AdminWithdrawalManagement = () => {
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-widest ${
+                  <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${
                     request.status === 'pending' ? "bg-amber-500/20 text-amber-500" :
                     request.status === 'approved' ? "bg-emerald-500/20 text-emerald-500" :
                     "bg-red-500/20 text-red-500"
@@ -218,7 +218,7 @@ const AdminWithdrawalManagement = () => {
                       </DialogTrigger>
                       <DialogContent className="bg-zinc-950 border-white/10 text-white max-w-md p-8 rounded-3xl">
                         <DialogHeader>
-                          <DialogTitle className="text-2xl font-black text-amber-500 italic uppercase">
+                          <DialogTitle className="text-2xl font-bold text-amber-500 italic uppercase">
                              Authorize Payout
                           </DialogTitle>
                         </DialogHeader>
@@ -269,7 +269,7 @@ const AdminWithdrawalManagement = () => {
                                {processing === request.id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Deny Request"}
                              </Button>
                              <Button 
-                               className="flex-1 bg-amber-500 hover:bg-amber-600 text-black font-black uppercase rounded-xl"
+                               className="flex-1 bg-amber-500 hover:bg-amber-600 text-black font-bold uppercase rounded-xl"
                                onClick={() => handleAction('approved')}
                                disabled={processing !== null}
                              >

@@ -37,7 +37,7 @@ import { toast } from "sonner";
 interface Submission {
   id: string;
   user_id: string;
-  receipt_url: string;
+  code: string;
   status: string;
   admin_notes: string;
   created_at: string;
@@ -221,7 +221,7 @@ const AdminWithdrawalCodeManagement = () => {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <span className={`px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-widest ${
+                      <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${
                         sub.status === 'pending' ? "bg-amber-500/20 text-amber-500" :
                         sub.status === 'approved' ? "bg-emerald-500/20 text-emerald-500" :
                         "bg-red-500/20 text-red-500"
@@ -255,13 +255,13 @@ const AdminWithdrawalCodeManagement = () => {
                 <Settings className="h-6 w-6 text-amber-500" />
               </div>
               <div>
-                <h3 className="text-xl font-black italic uppercase tracking-tighter">Payment Instructions</h3>
+                <h3 className="text-xl font-bold italic uppercase tracking-tighter">Payment Instructions</h3>
                 <p className="text-zinc-500 text-xs font-bold">Set the bank/wallet details for the withdrawal code fee</p>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label className="text-zinc-400 text-xs uppercase font-black">Detailed Instructions (Visible to Users)</Label>
+              <Label className="text-zinc-400 text-xs uppercase font-bold">Detailed Instructions (Visible to Users)</Label>
               <Textarea 
                 value={paymentDetails}
                 onChange={e => setPaymentDetails(e.target.value)}
@@ -273,7 +273,7 @@ const AdminWithdrawalCodeManagement = () => {
             <Button 
               onClick={handleUpdateSettings}
               disabled={savingSettings}
-              className="w-full bg-amber-500 hover:bg-amber-600 text-black font-black uppercase rounded-xl h-12 flex items-center gap-2"
+              className="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold uppercase rounded-xl h-12 flex items-center gap-2"
             >
               {savingSettings ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
               Save Instructions
@@ -287,29 +287,19 @@ const AdminWithdrawalCodeManagement = () => {
         <DialogContent className="sm:max-w-[500px] bg-zinc-950 border-white/10 text-white p-0 overflow-hidden rounded-3xl">
           <div className="p-6 bg-zinc-900 border-b border-white/5">
             <DialogHeader>
-              <DialogTitle className="text-2xl font-black italic uppercase tracking-tighter">
+              <DialogTitle className="text-2xl font-bold italic uppercase tracking-tighter">
                 Review Receipt
               </DialogTitle>
             </DialogHeader>
           </div>
 
           <div className="p-8 space-y-6">
-            <div className="space-y-4">
-              <h4 className="text-xs font-black text-amber-500 uppercase tracking-widest">Payment Proof</h4>
-              <div className="relative group aspect-video rounded-2xl overflow-hidden border border-white/10 bg-zinc-900">
-                <img 
-                  src={selectedSub?.receipt_url} 
-                  alt="Receipt" 
-                  className="w-full h-full object-cover"
-                />
-                <a 
-                  href={selectedSub?.receipt_url} 
-                  target="_blank" 
-                  rel="noreferrer"
-                  className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 font-bold"
-                >
-                  <ExternalLink className="h-5 w-5" /> Full Image
-                </a>
+            <div className="space-y-4 pt-4 border-t border-white/5">
+              <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Withdrawal Code</h4>
+              <div className="bg-amber-500/10 border border-amber-500/20 p-6 rounded-2xl text-center">
+                 <p className="text-3xl font-black text-amber-500 tracking-[0.3em] uppercase">
+                   {selectedSub?.code || "N/A"}
+                 </p>
               </div>
             </div>
 
@@ -317,14 +307,14 @@ const AdminWithdrawalCodeManagement = () => {
               <Button 
                 onClick={() => handleAction(selectedSub!.id, 'approved')}
                 disabled={processing}
-                className="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-black uppercase h-12 rounded-xl flex items-center gap-2"
+                className="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold uppercase h-12 rounded-xl flex items-center gap-2"
               >
                 <CheckCircle2 className="h-5 w-5" /> Confirm Payment
               </Button>
               <Button 
                 onClick={() => setIsRejectDialogOpen(true)}
                 disabled={processing}
-                className="w-full bg-transparent border border-red-500/50 text-red-500 hover:bg-red-500/10 font-black uppercase h-12 rounded-xl flex items-center gap-2"
+                className="w-full bg-transparent border border-red-500/50 text-red-500 hover:bg-red-500/10 font-bold uppercase h-12 rounded-xl flex items-center gap-2"
               >
                 <XCircle className="h-5 w-5" /> Reject Payment
               </Button>
@@ -337,7 +327,7 @@ const AdminWithdrawalCodeManagement = () => {
       <Dialog open={isRejectDialogOpen} onOpenChange={setIsRejectDialogOpen}>
         <DialogContent className="bg-zinc-950 border-white/10 text-white sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle className="text-xl font-black italic uppercase tracking-tighter text-red-500">
+            <DialogTitle className="text-xl font-bold italic uppercase tracking-tighter text-red-500">
               Rejection Reason
             </DialogTitle>
           </DialogHeader>
@@ -354,7 +344,7 @@ const AdminWithdrawalCodeManagement = () => {
             <Button 
               onClick={() => handleAction(selectedSub!.id, 'rejected', rejectionReason)}
               disabled={processing || !rejectionReason}
-              className="w-full bg-red-500 hover:bg-red-600 text-white font-black uppercase rounded-xl h-12"
+              className="w-full bg-red-500 hover:bg-red-600 text-white font-bold uppercase rounded-xl h-12"
             >
               {processing ? <Loader2 className="h-4 w-4 animate-spin" /> : "Confirm Rejection"}
             </Button>

@@ -23,7 +23,7 @@ const Sidebar: React.FC<SidebarProps> = ({ fullName, activeTab, onTabChange, onS
     <aside className="w-full md:w-64 bg-[#0a0a0a] text-white flex flex-col border-r border-white/5 z-20 md:sticky md:top-0 md:h-screen overflow-y-auto custom-scrollbar">
       <div className="p-6">
         <div className="flex flex-col gap-4 mb-8">
-          <h1 className="text-xl font-black text-amber-500 uppercase leading-none">
+          <h1 className="text-base font-bold text-amber-500 uppercase leading-none">
             AL SAFAT PLATFORM
           </h1>
 

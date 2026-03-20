@@ -15,11 +15,11 @@ const DashboardCard: React.FC<DashboardCardProps> = ({ title, value, desc, icon,
        <div className="p-8 flex-1">
           <div className="flex items-center gap-3 text-white mb-6">
              {icon}
-             <h3 className="text-2xl font-bold tracking-tight">{title}</h3>
+             <h3 className="text-lg font-bold tracking-tight">{title}</h3>
           </div>
           <div className="space-y-4">
              <div>
-               <p className="text-white text-3xl font-black">{value}</p>
+               <p className="text-white text-xl font-bold">{value}</p>
                <p className="text-white/60 text-sm leading-relaxed max-w-[200px]">
                   {desc}
                </p>

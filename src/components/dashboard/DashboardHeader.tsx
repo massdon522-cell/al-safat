@@ -1,4 +1,5 @@
 import { Menu } from "lucide-react";
+import TranslationSwitcher from "../TranslationSwitcher";
 
 interface DashboardHeaderProps {
   fullName: string;
@@ -17,6 +18,9 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ fullName, onMenuClick
       <span className="flex-1 truncate">
         Hello Investor {fullName}! AL SAFAT Platform investment is here for you
       </span>
+      <div className="ml-4 flex items-center gap-2 border-l border-white/10 pl-4">
+        <TranslationSwitcher />
+      </div>
     </header>
   );
 };

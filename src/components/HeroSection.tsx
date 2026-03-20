@@ -2,6 +2,7 @@ import { useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { UserPlus, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
+import { useNavigate } from "react-router-dom";
 
 const slides = [
   {
@@ -22,6 +23,7 @@ const slides = [
 ];
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
 
   const scrollPrev = useCallback(() => {
@@ -59,7 +61,7 @@ const HeroSection = () => {
               {/* Content */}
               <div className="relative h-full container mx-auto px-4 flex flex-col items-center justify-center text-center z-10 pt-20">
                 <div className="max-w-4xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
-                  <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-6 leading-tight tracking-tight drop-shadow-lg uppercase italic">
+                  <h1 className="text-4xl md:text-6xl lg:text-4xl font-bold text-white mb-6 leading-tight tracking-tight drop-shadow-lg uppercase italic">
                     {slide.title}
                   </h1>
                   <p className="text-xl md:text-2xl text-amber-500 font-medium mb-12 drop-shadow-md">
@@ -68,7 +70,7 @@ const HeroSection = () => {
                   <Button
                     size="lg"
                     className="bg-amber-500 hover:bg-amber-600 text-black font-bold text-lg px-10 py-7 rounded-md shadow-2xl transition-all hover:scale-105 uppercase"
-                    onClick={() => document.querySelector("#services")?.scrollIntoView({ behavior: "smooth" })}
+                    onClick={() => navigate('/login')}
                   >
                     <UserPlus className="mr-2 h-6 w-6" /> get started
                   </Button>

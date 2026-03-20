@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Home, LineChart, BookOpen, LogIn, UserPlus, Globe } from "lucide-react";
+import { Menu, X, Home, LineChart, BookOpen, LogIn, UserPlus } from "lucide-react";
+import TranslationSwitcher from "./TranslationSwitcher";
 
 const navLinks = [
   { label: "Home", href: "#home", icon: Home },
@@ -47,6 +48,7 @@ const Navbar = () => {
         </div>
 
         <div className="hidden lg:flex items-center gap-4">
+          <TranslationSwitcher />
           <Button 
             variant="outline" 
             className="border-amber-500 text-amber-500 bg-amber-500/10 hover:bg-amber-500 hover:text-black transition-all font-bold px-6 h-10 border-2" 
@@ -89,6 +91,9 @@ const Navbar = () => {
             ))}
           </ul>
           <div className="flex flex-col gap-4">
+            <div className="flex justify-center py-2 border-b border-white/5">
+              <TranslationSwitcher />
+            </div>
             <Button variant="outline" className="w-full border-amber-500 text-amber-500 h-12 text-lg font-bold" asChild>
               <Link to="/login">Login</Link>
             </Button>
