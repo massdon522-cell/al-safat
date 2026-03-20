@@ -150,9 +150,49 @@
   }
   /* Sidebar Scrollbar Thumb Hover */
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(245, 158, 11, 0.5); /* amber-500 */
+    background: rgba(245, 158, 11, 0.4);
   }
+}
 
+/* 🚀 ULTRA-AGGRESSIVE GOOGLE TRANSLATE HIDE 🚀 */
+/* This kills the top bar and prevents the "push down" effect */
+html {
+  top: 0px !important;
+  position: relative !important;
+}
+
+body {
+  top: 0px !important;
+  position: static !important;
+}
+
+.goog-te-banner-frame,
+.goog-te-banner,
+.goog-te-gadget-icon,
+.goog-te-menu-value,
+.goog-te-balloon-frame,
+.skiptranslate,
+#goog-gt-tt,
+.goog-tooltip,
+.goog-tooltip:hover {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+}
+
+iframe.goog-te-banner-frame {
+  display: none !important;
+}
+
+.goog-text-highlight {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+@layer base {
   /* Receipt Print Styling */
   @media print {
     body * {
