@@ -37,9 +37,10 @@ interface WithdrawalRequestModalProps {
   onClose: () => void;
   availableProfit: number;
   symbol: string;
+  initialWithdrawal?: any;
 }
 
-const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({ isOpen, onClose, availableProfit, symbol }) => {
+const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({ isOpen, onClose, availableProfit, symbol, initialWithdrawal }) => {
   const { user } = useAuth();
   const [method, setMethod] = useState("");
   const [amount, setAmount] = useState("");
@@ -59,16 +60,47 @@ const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({ isOpen,
 
   useEffect(() => {
     if (isOpen && user) {
-      fetchPaymentSettings();
-      restoreState();
+      if (initialWithdrawal) {
+        setWithdrawalId(initialWithdrawal.id);
+        setLastWithdrawalData(initialWithdrawal);
+        setAmount(initialWithdrawal.amount.toString());
+        setMethod(initialWithdrawal.method);
+        setDetails(initialWithdrawal.details);
+        
+        // Determine view state based on status
+        if (initialWithdrawal.status === 'awaiting_payment') {
+          setStep('receipt');
+        } else {
+          setStep('pending');
+          setSubmissionStatus(initialWithdrawal.status);
+        }
+      } else {
+        fetchPaymentSettings();
+        restoreState();
+      }
     }
-  }, [isOpen, user]);
+  }, [isOpen, user, initialWithdrawal]);
 
   const restoreState = async () => {
     if (!user) return;
     setLoading(true);
     try {
-      // 1. Check for pending/rejected code submission
+      // 1. Fetch latest withdrawal (could be awaiting_payment or pending)
+      const { data: withdrawalData } = await supabase
+        .from('withdrawals')
+        .select('*')
+        .eq('user_id', user.id)
+        .in('status', ['awaiting_payment', 'pending'])
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (withdrawalData) {
+        setWithdrawalId(withdrawalData.id);
+        setLastWithdrawalData(withdrawalData);
+      }
+
+      // 2. Check for code submission status
       const { data: subData } = await supabase
         .from('withdrawal_code_submissions')
         .select('*')
@@ -83,30 +115,17 @@ const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({ isOpen,
         
         if (subData.status === 'pending' || subData.status === 'rejected') {
           setStep('pending');
-          setLoading(false);
-          return;
+        } else if (subData.status === 'approved') {
+          setStep('pending'); // Still show pending screen if approved but withdrawal not COMPLETE
+          setSubmissionStatus('approved');
         }
-      }
-
-      // 2. Check for active withdrawal
-      const { data: withdrawalData } = await supabase
-        .from('withdrawals')
-        .select('*')
-        .eq('user_id', user.id)
-        .in('status', ['awaiting_payment', 'pending'])
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      if (withdrawalData) {
-        setWithdrawalId(withdrawalData.id);
-        setLastWithdrawalData(withdrawalData);
-        
-        if (withdrawalData.status === 'pending') {
-          setStep('pending');
-          setSubmissionStatus('approved'); // Visual cue that code part is done
+      } else if (withdrawalData) {
+        // If withdrawal exists but NO code submission, we are at step 2 (receipt) or 3 (payment)
+        if (withdrawalData.status === 'awaiting_payment') {
+          // Default to payment step if already seen receipt, or use a heuristic
+          setStep('payment'); 
         } else {
-          setStep('payment');
+          setStep('pending');
         }
       } else {
         setStep('form');
@@ -235,107 +254,167 @@ const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({ isOpen,
     );
   }
 
-  const renderStep = () => {
-    switch (step) {
-      case 'receipt':
-        return (
-          <div className="p-8 space-y-8 animate-in fade-in zoom-in-95 duration-500">
-            {/* Premium Receipt UI */}
-            <div id="withdrawal-receipt" className="relative overflow-hidden bg-white border-2 border-zinc-100 rounded-3xl p-8 shadow-2xl">
-              {/* Watermark Logo */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none select-none">
-                <ShieldCheck className="w-64 h-64 text-black" />
+  const renderReceipt = (currentStatus: 'awaiting_payment' | 'pending' | 'rejected' | 'approved') => {
+    let statusText = "";
+    let statusColorClass = "";
+    let statusBgClass = "";
+    let statusIcon = null;
+
+    switch (currentStatus) {
+      case 'awaiting_payment':
+        statusText = "Awaiting Verification";
+        statusColorClass = "text-amber-700";
+        statusBgClass = "bg-amber-500";
+        statusIcon = <span className="h-2 w-2 rounded-full bg-white animate-pulse" />;
+        break;
+      case 'pending':
+        statusText = "Pending Approval";
+        statusColorClass = "text-amber-700";
+        statusBgClass = "bg-amber-500";
+        statusIcon = <span className="h-2 w-2 rounded-full bg-white animate-pulse" />;
+        break;
+      case 'rejected':
+        statusText = "Rejected";
+        statusColorClass = "text-red-700";
+        statusBgClass = "bg-red-500";
+        statusIcon = <span className="h-2 w-2 rounded-full bg-white" />;
+        break;
+      case 'approved':
+        statusText = "Approved";
+        statusColorClass = "text-emerald-700";
+        statusBgClass = "bg-emerald-500";
+        statusIcon = <span className="h-2 w-2 rounded-full bg-white" />;
+        break;
+    }
+
+    return (
+      <div className="p-8 space-y-8 animate-in fade-in zoom-in-95 duration-500">
+        {/* Premium Receipt UI */}
+        <div id="withdrawal-receipt" className="relative overflow-hidden bg-white border-2 border-zinc-100 rounded-3xl p-8 shadow-2xl">
+          {/* Watermark Logo */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none select-none">
+            <ShieldCheck className="w-64 h-64 text-black" />
+          </div>
+
+          {/* Header */}
+          <div className="flex justify-between items-start mb-8 relative z-10">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 bg-amber-500 rounded-lg flex items-center justify-center">
+                  <ShieldCheck className="h-5 w-5 text-black" />
+                </div>
+                <h1 className="text-xl font-black italic uppercase tracking-tighter text-black">
+                  AL SAFAT
+                </h1>
               </div>
+              <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Withdrawal Receipt</p>
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Transaction ID</p>
+              <p className="text-xs font-mono font-bold text-zinc-900">#{withdrawalId ? withdrawalId.slice(-8).toUpperCase() : "PENDING"}</p>
+            </div>
+          </div>
 
-              {/* Header */}
-              <div className="flex justify-between items-start mb-8 relative z-10">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 bg-amber-500 rounded-lg flex items-center justify-center">
-                      <ShieldCheck className="h-5 w-5 text-black" />
-                    </div>
-                    <h1 className="text-xl font-black italic uppercase tracking-tighter text-black">
-                      AL SAFAT
-                    </h1>
-                  </div>
-                  <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Withdrawal Receipt</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Transaction ID</p>
-                  <p className="text-xs font-mono font-bold text-zinc-900">#{withdrawalId?.slice(-8).toUpperCase()}</p>
-                </div>
+          {/* Receipt Content */}
+          <div className="space-y-6 relative z-10">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Amount</p>
+                <p className="text-lg font-black text-amber-600">{symbol}{(lastWithdrawalData?.amount || 0).toLocaleString()}</p>
               </div>
-
-              {/* Receipt Content */}
-              <div className="space-y-6 relative z-10">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Amount</p>
-                    <p className="text-lg font-black text-amber-600">{symbol}{lastWithdrawalData?.amount?.toLocaleString()}</p>
-                  </div>
-                  <div className="space-y-1 text-right">
-                    <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Method</p>
-                    <p className="text-sm font-bold text-zinc-900">{lastWithdrawalData?.method}</p>
-                  </div>
-                </div>
-
-                <div className="space-y-1 border-t border-zinc-100 pt-4">
-                  <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Recipient Details</p>
-                  <p className="text-xs font-medium text-zinc-900 break-all bg-zinc-50 p-3 rounded-xl border border-zinc-100">
-                    {lastWithdrawalData?.details}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4 pt-2">
-                  <div className="space-y-1">
-                    <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Date</p>
-                    <p className="text-xs font-bold text-zinc-900">
-                      {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                    </p>
-                  </div>
-                  <div className="space-y-1 text-right">
-                    <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Time</p>
-                    <p className="text-xs font-bold text-zinc-900">
-                      {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="bg-amber-50/50 border border-amber-100 rounded-2xl p-4 flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase text-amber-700 tracking-widest">Status</span>
-                  <div className="flex items-center gap-1.5 px-3 py-1 bg-amber-500 rounded-full">
-                    <span className="h-2 w-2 rounded-full bg-white animate-pulse" />
-                    <span className="text-[10px] font-black uppercase text-black tracking-widest">Awaiting Verification</span>
-                  </div>
-                </div>
+              <div className="space-y-1 text-right">
+                <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Method</p>
+                <p className="text-sm font-bold text-zinc-900">{lastWithdrawalData?.method || "---"}</p>
               </div>
+            </div>
 
-              {/* Footer */}
-              <div className="mt-8 pt-6 border-t border-dashed border-zinc-200 text-center relative z-10">
-                <p className="text-[10px] text-zinc-400 font-medium italic">
-                  This is an electronically generated receipt for your investment withdrawal on Al Safat Platform.
+            <div className="space-y-1 border-t border-zinc-100 pt-4">
+              <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Recipient Details</p>
+              <p className="text-xs font-medium text-zinc-900 break-all bg-zinc-50 p-3 rounded-xl border border-zinc-100">
+                {lastWithdrawalData?.details || "---"}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 pt-2">
+              <div className="space-y-1">
+                <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Date</p>
+                <p className="text-xs font-bold text-zinc-900">
+                  {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                </p>
+              </div>
+              <div className="space-y-1 text-right">
+                <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Time</p>
+                <p className="text-xs font-bold text-zinc-900">
+                  {new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
                 </p>
               </div>
             </div>
 
-            <div className="flex flex-col gap-3">
-              <Button 
-                onClick={handleDownloadReceipt}
-                variant="outline"
-                className="w-full border-zinc-200 text-zinc-600 font-bold h-12 rounded-xl flex items-center justify-center gap-2 mb-2"
-              >
-                <TrendingUp className="h-4 w-4 rotate-180" /> Download Receipt
-              </Button>
-              <Button 
-                onClick={handleNextFromReceipt}
-                disabled={loading}
-                className="w-full bg-[#A6760E] hover:bg-[#8e650c] text-white h-12 font-black uppercase rounded-xl shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2"
-              >
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Continue Payment"}
-              </Button>
+            <div className={`bg-amber-50/50 border border-amber-100 rounded-2xl p-4 flex items-center justify-between`}>
+              <span className={`text-[10px] font-black uppercase ${statusColorClass} tracking-widest`}>Status</span>
+              <div className={`flex items-center gap-1.5 px-3 py-1 ${statusBgClass} rounded-full`}>
+                {statusIcon}
+                <span className="text-[10px] font-black uppercase text-black tracking-widest">{statusText}</span>
+              </div>
             </div>
+            {currentStatus === 'rejected' && rejectionReason && (
+              <div className="bg-red-50 border border-red-100 rounded-2xl p-4">
+                <p className="text-[10px] font-black uppercase text-red-700 tracking-widest mb-1">Reason for Rejection</p>
+                <p className="text-xs text-red-600 font-medium">{rejectionReason}</p>
+              </div>
+            )}
           </div>
-        );
+
+          {/* Footer */}
+          <div className="mt-8 pt-6 border-t border-dashed border-zinc-200 text-center relative z-10">
+            <p className="text-[10px] text-zinc-400 font-medium italic">
+              This is an electronically generated receipt for your investment withdrawal on Al Safat Platform.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <Button 
+            onClick={handleDownloadReceipt}
+            variant="outline"
+            className="w-full border-zinc-200 text-zinc-600 font-bold h-12 rounded-xl flex items-center justify-center gap-2 mb-2"
+          >
+            <TrendingUp className="h-4 w-4 rotate-180" /> Download Receipt
+          </Button>
+
+          {currentStatus === 'awaiting_payment' && (
+            <Button 
+              onClick={handleNextFromReceipt}
+              disabled={loading}
+              className="w-full bg-[#A6760E] hover:bg-[#8e650c] text-white h-12 font-black uppercase rounded-xl shadow-lg shadow-amber-500/10 flex items-center justify-center gap-2"
+            >
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Continue Payment"}
+            </Button>
+          )}
+          {currentStatus === 'pending' && (
+            <Button onClick={onClose} variant="outline" className="w-full border-zinc-200 text-zinc-500 font-bold h-12 rounded-xl">
+              Close Window
+            </Button>
+          )}
+          {currentStatus === 'rejected' && (
+            <Button onClick={() => setStep('payment')} className="w-full bg-zinc-900 hover:bg-black text-white font-bold h-12 rounded-xl">
+              Try Again
+            </Button>
+          )}
+          {currentStatus === 'approved' && (
+            <Button onClick={onClose} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-12 rounded-xl">
+              Done
+            </Button>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const renderStep = () => {
+    switch (step) {
+      case 'receipt':
+        return renderReceipt('awaiting_payment');
       case 'payment':
         return (
           <div className="p-8 space-y-6 animate-in fade-in duration-500">
@@ -388,50 +467,7 @@ const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({ isOpen,
           </div>
         );
       case 'pending':
-        return (
-          <div className="p-8 text-center space-y-6 animate-in fade-in duration-500">
-             {submissionStatus === 'approved' ? (
-                <>
-                  <div className="h-20 w-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto">
-                    <ShieldCheck className="h-10 w-10 text-emerald-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-black uppercase text-emerald-600">Withdrawal Approved</h3>
-                    <p className="text-sm text-zinc-500 font-medium pt-2 italic">Your withdrawal is being processed by the finance team. Funds will arrive shortly.</p>
-                  </div>
-                  <Button onClick={onClose} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-12 rounded-xl mt-4">
-                    Done
-                  </Button>
-                </>
-             ) : submissionStatus === 'rejected' ? (
-                <>
-                  <div className="h-20 w-20 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-                    <AlertTriangle className="h-10 w-10 text-red-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-black uppercase text-red-600">Code Rejected</h3>
-                    <p className="text-sm text-zinc-500 font-medium pt-2">{rejectionReason}</p>
-                  </div>
-                  <Button onClick={() => setStep('payment')} className="w-full bg-zinc-900 hover:bg-black text-white font-bold h-12 rounded-xl mt-4">
-                    Try Again
-                  </Button>
-                </>
-             ) : (
-                <>
-                  <div className="h-20 w-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto">
-                    <Clock className="h-10 w-10 text-amber-600 animate-pulse" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-black uppercase text-zinc-900">Pending Approval</h3>
-                    <p className="text-sm text-zinc-500 font-medium pt-2 italic">Our team is verifying your withdrawal code. This usually takes 1-2 hours.</p>
-                  </div>
-                  <Button onClick={onClose} variant="outline" className="w-full border-zinc-200 text-zinc-500 font-bold h-12 rounded-xl mt-4">
-                    Close Window
-                  </Button>
-                </>
-             )}
-          </div>
-        );
+        return renderReceipt(submissionStatus as any || 'pending');
       case 'form':
       default:
         return (

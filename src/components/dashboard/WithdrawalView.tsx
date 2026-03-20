@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
 import WithdrawalRequestModal from "./WithdrawalRequestModal";
 
 interface WithdrawalRequest {
@@ -36,6 +37,7 @@ const WithdrawalView: React.FC<WithdrawalViewProps> = ({ fullName, availableProf
   const [requests, setRequests] = useState<WithdrawalRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({ total: 0, pending: 0 });
+  const [selectedWithdrawal, setSelectedWithdrawal] = useState<WithdrawalRequest | null>(null);
 
   const fetchWithdrawalData = async () => {
     if (!user) return;
@@ -101,8 +103,10 @@ const WithdrawalView: React.FC<WithdrawalViewProps> = ({ fullName, availableProf
       <WithdrawalRequestModal 
         isOpen={isModalOpen} 
         symbol={symbol}
+        initialWithdrawal={selectedWithdrawal}
         onClose={() => {
           setIsModalOpen(false);
+          setSelectedWithdrawal(null);
           fetchWithdrawalData();
         }}
         availableProfit={availableProfit}
@@ -171,6 +175,7 @@ const WithdrawalView: React.FC<WithdrawalViewProps> = ({ fullName, availableProf
                       Payment Status <div className="p-1 bg-white/5 rounded">✔️</div> ↕
                     </div>
                   </th>
+                  <th className="px-4 py-4 text-white">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -213,6 +218,19 @@ const WithdrawalView: React.FC<WithdrawalViewProps> = ({ fullName, availableProf
                           {req.status === 'approved' && <CheckCircle2 className="h-4 w-4" />}
                           {req.status === 'rejected' && <X className="h-4 w-4" />}
                         </span>
+                      </td>
+                      <td className="px-4 py-4 text-sm">
+                        <Button 
+                          onClick={() => {
+                            setSelectedWithdrawal(req);
+                            setIsModalOpen(true);
+                          }}
+                          variant="ghost" 
+                          size="sm" 
+                          className="text-amber-500 hover:text-white hover:bg-amber-600/20 border border-amber-500/20 h-8 font-bold"
+                        >
+                          View Receipt
+                        </Button>
                       </td>
                     </tr>
                   ))
