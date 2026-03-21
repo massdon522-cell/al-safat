@@ -65,7 +65,6 @@ const AdminWithdrawalManagement = () => {
           *,
           profiles!user_id (first_name, last_name, email)
         `)
-        .neq('status', 'awaiting_payment') // Hide those still needing code payment
         .order('created_at', { ascending: false });
       
       if (error) throw error;
@@ -199,86 +198,108 @@ const AdminWithdrawalManagement = () => {
                 <TableCell>
                   <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-widest ${
                     request.status === 'pending' ? "bg-amber-500/20 text-amber-500" :
+                    request.status === 'awaiting_payment' ? "bg-blue-500/20 text-blue-500 border border-blue-500/30" :
                     request.status === 'approved' ? "bg-emerald-500/20 text-emerald-500" :
                     "bg-red-500/20 text-red-500"
                   }`}>
-                    {request.status}
+                    {request.status.replace('_', ' ')}
                   </span>
                 </TableCell>
                 <TableCell className="text-right">
-                  {request.status === 'pending' ? (
-                    <Dialog open={selectedRequest?.id === request.id} onOpenChange={(open) => {
-                      if (open) setSelectedRequest(request);
-                      else setSelectedRequest(null);
-                    }}>
-                      <DialogTrigger asChild>
-                        <Button variant="ghost" size="sm" className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all rounded-xl border border-red-500/20">
-                          Review Request
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="bg-zinc-950 border-white/10 text-white max-w-md p-8 rounded-3xl">
-                        <DialogHeader>
-                          <DialogTitle className="text-2xl font-bold text-amber-500 italic uppercase">
-                             Authorize Payout
-                          </DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-6 py-4">
-                          <div className="bg-zinc-900/50 p-4 rounded-2xl border border-white/5 space-y-3">
-                             <div className="flex justify-between">
-                                <span className="text-zinc-500 text-sm">Amount Requested</span>
-                                <span className="font-bold text-red-500">${request.amount}</span>
-                             </div>
-                             <div className="flex justify-between">
-                                <span className="text-zinc-500 text-sm">Method</span>
-                                <span className="font-bold uppercase">{request.method}</span>
-                             </div>
-                             <div className="pt-2 border-t border-white/5">
-                                <Label className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest">Payout Details</Label>
-                                <p className="text-xs font-mono break-all text-white/70 bg-black/30 p-2 rounded mt-1">
-                                   {request.details}
-                                </p>
-                             </div>
-                          </div>
+                  {request.status === 'pending' || request.status === 'awaiting_payment' ? (
+                    <div className="flex items-center justify-end gap-2">
+                      <Dialog open={selectedRequest?.id === request.id} onOpenChange={(open) => {
+                        if (open) {
+                          setSelectedRequest(request);
+                          setAdminNotes(""); // Reset notes when opening
+                        }
+                        else setSelectedRequest(null);
+                      }}>
+                        <DialogTrigger asChild>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all rounded-xl border border-emerald-500/20"
+                          >
+                            <CheckCircle2 className="h-4 w-4 mr-1" /> Approve
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent className="bg-zinc-950 border-white/10 text-white max-w-md p-8 rounded-3xl">
+                          <DialogHeader>
+                            <DialogTitle className="text-2xl font-bold text-amber-500 italic uppercase">
+                               Authorize Payout
+                            </DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-6 py-4">
+                            <div className="bg-zinc-900/50 p-4 rounded-2xl border border-white/5 space-y-3">
+                               <div className="flex justify-between">
+                                  <span className="text-zinc-500 text-sm">Amount Requested</span>
+                                  <span className="font-bold text-red-500">${request.amount}</span>
+                               </div>
+                               <div className="flex justify-between">
+                                  <span className="text-zinc-500 text-sm">Method</span>
+                                  <span className="font-bold uppercase">{request.method}</span>
+                               </div>
+                               <div className="pt-2 border-t border-white/5">
+                                  <Label className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest">Payout Details</Label>
+                                  <p className="text-xs font-mono break-all text-white/70 bg-black/30 p-2 rounded mt-1">
+                                     {request.details}
+                                  </p>
+                               </div>
+                            </div>
 
-                          <div className="space-y-2">
-                             <Label className="text-zinc-500 font-bold uppercase text-[10px] tracking-widest flex items-center gap-2">
-                                <MessageSquare className="h-3 w-3" /> Admin Approval Notes
-                             </Label>
-                             <Textarea 
-                               placeholder="Add payment confirmation link, transaction hash, or reason for denial..."
-                               className="bg-zinc-900 border-white/10 min-h-[100px]"
-                               value={adminNotes}
-                               onChange={(e) => setAdminNotes(e.target.value)}
-                             />
-                          </div>
+                            <div className="space-y-2">
+                               <Label className="text-zinc-500 font-bold uppercase text-[10px] tracking-widest flex items-center gap-2">
+                                  <MessageSquare className="h-3 w-3" /> Admin Approval Notes
+                               </Label>
+                               <Textarea 
+                                 placeholder="Add payment confirmation link, transaction hash, or reason for denial..."
+                                 className="bg-zinc-900 border-white/10 min-h-[100px]"
+                                 value={adminNotes}
+                                 onChange={(e) => setAdminNotes(e.target.value)}
+                               />
+                            </div>
 
-                          <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl flex gap-3 text-amber-500">
-                             <AlertTriangle className="h-5 w-5 shrink-0" />
-                             <p className="text-[10px] leading-relaxed">
-                                Please ensure the funds have been successfully sent to the user's provided address BEFORE clicking Approve.
-                             </p>
-                          </div>
+                            <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl flex gap-3 text-amber-500">
+                               <AlertTriangle className="h-5 w-5 shrink-0" />
+                               <p className="text-[10px] leading-relaxed">
+                                  Please ensure the funds have been successfully sent to the user's provided address BEFORE clicking Approve.
+                               </p>
+                            </div>
 
-                          <div className="flex gap-3 pt-4">
-                             <Button 
-                               variant="ghost" 
-                               className="flex-1 rounded-xl text-zinc-400 hover:bg-red-500/10 hover:text-red-400"
-                               onClick={() => handleAction('rejected')}
-                               disabled={processing !== null}
-                             >
-                               {processing === request.id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Deny Request"}
-                             </Button>
-                             <Button 
-                               className="flex-1 bg-amber-500 hover:bg-amber-600 text-black font-bold uppercase rounded-xl"
-                               onClick={() => handleAction('approved')}
-                               disabled={processing !== null}
-                             >
-                               {processing === request.id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Approve & Mark Paid"}
-                             </Button>
+                            <div className="flex gap-3 pt-4">
+                               <Button 
+                                 variant="ghost" 
+                                 className="flex-1 rounded-xl text-zinc-400 hover:bg-red-500/10 hover:text-red-400"
+                                 onClick={() => handleAction('rejected')}
+                                 disabled={processing !== null}
+                               >
+                                 {processing === request.id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Confirm Rejection"}
+                               </Button>
+                               <Button 
+                                 className="flex-1 bg-amber-500 hover:bg-amber-600 text-black font-bold uppercase rounded-xl"
+                                 onClick={() => handleAction('approved')}
+                                 disabled={processing !== null}
+                               >
+                                 {processing === request.id ? <Loader2 className="h-4 w-4 animate-spin" /> : "Approve & Mark Paid"}
+                               </Button>
+                            </div>
                           </div>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
+                        </DialogContent>
+                      </Dialog>
+
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => {
+                          setSelectedRequest(request);
+                          setAdminNotes("");
+                        }}
+                        className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all rounded-xl border border-red-500/20"
+                      >
+                         <XCircle className="h-4 w-4 mr-1" /> Reject
+                      </Button>
+                    </div>
                   ) : (
                     <div className="flex items-center justify-end gap-2 text-zinc-600 text-[10px] font-bold uppercase">
                        {request.status === 'approved' ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}

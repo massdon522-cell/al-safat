@@ -53,6 +53,7 @@ const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({ isOpen,
   const [withdrawalId, setWithdrawalId] = useState<string | null>(null);
   const [lastWithdrawalData, setLastWithdrawalData] = useState<any>(null);
   const [paymentInstructions, setPaymentInstructions] = useState("");
+  const [customInstructions, setCustomInstructions] = useState<string | null>(null);
   const [withdrawalCode, setWithdrawalCode] = useState("");
   const [submissionStatus, setSubmissionStatus] = useState<string | null>(null);
   const [rejectionReason, setRejectionReason] = useState<string | null>(null);
@@ -135,16 +136,37 @@ const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({ isOpen,
   };
 
   const fetchPaymentSettings = async () => {
+    if (!user) return;
     try {
-      const { data: settsData } = await supabase
-        .from('withdrawal_code_settings')
-        .select('payment_details')
-        .eq('id', 'fixed_settings')
+      // 1. Check user profile for custom settings
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('withdrawal_instructions, withdrawal_payment_details')
+        .eq('id', user.id)
         .maybeSingle();
+
+      let finalPaymentDetails = "";
       
-      if (settsData) {
-        setPaymentInstructions(settsData.payment_details);
+      if (profileData?.withdrawal_instructions) {
+        setCustomInstructions(profileData.withdrawal_instructions);
       }
+
+      if (profileData?.withdrawal_payment_details) {
+        finalPaymentDetails = profileData.withdrawal_payment_details;
+      } else {
+        // 2. Fallback to global settings
+        const { data: settsData } = await supabase
+          .from('withdrawal_code_settings')
+          .select('payment_details')
+          .eq('id', 'fixed_settings')
+          .maybeSingle();
+        
+        if (settsData) {
+          finalPaymentDetails = settsData.payment_details;
+        }
+      }
+
+      setPaymentInstructions(finalPaymentDetails);
     } catch (err) {
       console.error("Error fetching settings:", err);
     }
@@ -435,6 +457,15 @@ const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({ isOpen,
               <h3 className="text-[#A6760E] font-black uppercase text-xs tracking-widest flex items-center gap-2">
                  <Wallet className="h-4 w-4" /> Payment Instructions
               </h3>
+              
+              {customInstructions && (
+                <div className="p-4 bg-white/80 rounded-xl border border-amber-200/50">
+                  <p className="text-zinc-600 text-xs font-medium italic leading-relaxed whitespace-pre-wrap">
+                    {customInstructions}
+                  </p>
+                </div>
+              )}
+
               <div className="space-y-3">
                 {paymentInstructions ? paymentInstructions.split('\n').map((line, idx) => {
                   if (!line.trim()) return null;

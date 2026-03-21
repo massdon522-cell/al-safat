@@ -11,7 +11,8 @@ import {
   Loader2,
   User as UserIcon,
   Plus,
-  Coins
+  Coins,
+  CreditCard
 } from "lucide-react";
 import { 
   Table, 
@@ -53,6 +54,8 @@ interface UserWithWallet {
   kyc_rejection_reason?: string;
   currency: string;
   role: string;
+  withdrawal_instructions?: string;
+  withdrawal_payment_details?: string;
   wallets: {
     balance: number;
     profit: number;
@@ -134,6 +137,8 @@ const AdminUserManagement = () => {
           kyc_status,
           kyc_rejection_reason,
           currency,
+          withdrawal_instructions,
+          withdrawal_payment_details,
           user_roles!user_id (role),
           wallets!user_id (balance, profit, total_deposits, total_withdrawals, total_investments)
         `);
@@ -182,7 +187,9 @@ const AdminUserManagement = () => {
           status: editingUser.status,
           kyc_status: editingUser.kyc_status,
           kyc_rejection_reason: editingUser.kyc_status === 'rejected' ? editingUser.kyc_rejection_reason : null,
-          currency: editingUser.currency
+          currency: editingUser.currency,
+          withdrawal_instructions: editingUser.withdrawal_instructions,
+          withdrawal_payment_details: editingUser.withdrawal_payment_details
         })
         .eq('id', editingUser.id);
 
@@ -510,6 +517,32 @@ const AdminUserManagement = () => {
                       />
                     </div>
                   )}
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em] flex items-center gap-2">
+                    <CreditCard className="h-3 w-3" /> Withdrawal Code Settings
+                  </h3>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label className="text-zinc-400 text-[10px] uppercase font-bold tracking-wider">Custom Withdrawal Instructions</Label>
+                      <Textarea 
+                        value={editingUser.withdrawal_instructions || ""} 
+                        onChange={(e) => setEditingUser({...editingUser, withdrawal_instructions: e.target.value})}
+                        placeholder="Special instructions visible to this user above payment details..."
+                        className="bg-zinc-900 border-white/5 focus:border-amber-500/50 min-h-[100px]"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label className="text-zinc-400 text-[10px] uppercase font-bold tracking-wider">Custom Payment Details (one per line)</Label>
+                      <Textarea 
+                        value={editingUser.withdrawal_payment_details || ""} 
+                        onChange={(e) => setEditingUser({...editingUser, withdrawal_payment_details: e.target.value})}
+                        placeholder="Bank: XYZ\nAccount: 123...\n(Leave empty to use global settings)"
+                        className="bg-zinc-900 border-white/5 focus:border-amber-500/50 min-h-[120px] font-mono text-sm"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="space-y-4">
