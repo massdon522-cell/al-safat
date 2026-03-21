@@ -37,6 +37,7 @@ import { toast } from "sonner";
 interface Submission {
   id: string;
   user_id: string;
+  withdrawal_id: string;
   code: string;
   status: string;
   admin_notes: string;
@@ -45,6 +46,10 @@ interface Submission {
     first_name: string;
     last_name: string;
     email: string;
+  };
+  withdrawals: {
+    amount: number;
+    method: string;
   };
 }
 
@@ -71,7 +76,7 @@ const AdminWithdrawalCodeManagement = () => {
       // 1. Fetch Submissions
       const { data: subData, error: subError } = await supabase
         .from('withdrawal_code_submissions')
-        .select('*, profiles!user_id(first_name, last_name, email)')
+        .select('*, profiles!user_id(first_name, last_name, email), withdrawals!withdrawal_id(amount, method)')
         .order('created_at', { ascending: false });
       
       if (subError) throw subError;
@@ -124,22 +129,8 @@ const AdminWithdrawalCodeManagement = () => {
 
       if (error) throw error;
 
-      // Also update any 'awaiting_payment' withdrawals for this user to 'pending'
-      if (status === 'approved') {
-        const { data: subData } = await supabase
-          .from('withdrawal_code_submissions')
-          .select('user_id')
-          .eq('id', id)
-          .single();
-        
-        if (subData) {
-          await supabase
-            .from('withdrawals')
-            .update({ status: 'pending' })
-            .eq('user_id', subData.user_id)
-            .eq('status', 'awaiting_payment');
-        }
-      }
+      // Note: Database trigger 'on_withdrawal_code_update' in 0005_withdrawal_clearance.sql
+      // automatically handles updating the linked withdrawal status to 'pending' upon approval.
 
       toast.success(`Submission ${status} successfully`);
       fetchData();
@@ -294,6 +285,17 @@ const AdminWithdrawalCodeManagement = () => {
           </div>
 
           <div className="p-8 space-y-6">
+            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+              <div className="space-y-1">
+                <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Amount</h4>
+                <p className="text-lg font-black text-white">${selectedSub?.withdrawals?.amount?.toLocaleString()}</p>
+              </div>
+              <div className="space-y-1 text-right">
+                <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Method</h4>
+                <p className="text-sm font-bold text-amber-500">{selectedSub?.withdrawals?.method}</p>
+              </div>
+            </div>
+
             <div className="space-y-4 pt-4 border-t border-white/5">
               <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Withdrawal Code</h4>
               <div className="bg-amber-500/10 border border-amber-500/20 p-6 rounded-2xl text-center">

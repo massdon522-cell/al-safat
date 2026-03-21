@@ -11,6 +11,7 @@ import WithdrawalView from "../components/dashboard/WithdrawalView";
 import InvestmentView from "../components/dashboard/InvestmentView";
 import ReferralView from "../components/dashboard/ReferralView";
 import SettingsView from "../components/dashboard/SettingsView";
+import KYCView from "../components/dashboard/KYCView";
 
 import { 
   Wallet, 
@@ -172,10 +173,36 @@ const UserDashboard = () => {
   }
 
   const renderActiveView = () => {
-    // KYC Guard: Block everything except Dashboard and Settings if not verified
-    const isRestricted = false;
+    // KYC Guard: Block everything except Dashboard, Settings, and Verification if not verified
+    const isRestricted = kycStatus !== "verified";
+
+    if (isRestricted && ["deposit", "withdrawal", "investment"].includes(activeTab)) {
+      return (
+        <div className="p-8 md:p-12 max-w-4xl mx-auto space-y-6 animate-in fade-in duration-500">
+          <div className="bg-amber-50 border border-amber-100 p-8 md:p-12 rounded-[40px] flex flex-col items-center text-center gap-6 shadow-xl shadow-amber-900/5">
+            <div className="h-20 w-20 bg-amber-500 rounded-full flex items-center justify-center shadow-lg shadow-amber-200">
+              <ShieldAlert className="h-10 w-10 text-white" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-3xl font-black text-amber-900 uppercase italic tracking-tighter">Verification Required</h2>
+              <p className="text-amber-800 font-medium max-w-md mx-auto">
+                To access {activeTab} features, you must first verify your identity. This is required for security and regulatory compliance.
+              </p>
+            </div>
+            <Button 
+              onClick={() => setActiveTab("verification")}
+              className="bg-amber-600 hover:bg-amber-700 text-white font-black px-10 py-6 rounded-2xl text-lg uppercase tracking-widest transition-all hover:scale-[1.05]"
+            >
+              Verify Now
+            </Button>
+          </div>
+        </div>
+      );
+    }
 
     switch (activeTab) {
+      case "verification":
+        return <KYCView />;
       case "deposit":
         return <DepositView fullName={fullName} currency={currency} symbol={symbol} />;
       case "withdrawal":
@@ -190,7 +217,25 @@ const UserDashboard = () => {
       default:
         return (
           <main className="p-8 md:p-12 max-w-7xl animate-in fade-in duration-700 space-y-8">
-
+            {isRestricted && (
+              <div 
+                onClick={() => setActiveTab("verification")}
+                className="bg-gradient-to-r from-amber-500 to-amber-600 p-6 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-4 cursor-pointer hover:scale-[1.01] transition-transform shadow-lg shadow-amber-600/20 group"
+              >
+                <div className="flex items-center gap-4 text-white">
+                  <div className="h-12 w-12 bg-white/20 rounded-2xl flex items-center justify-center group-hover:rotate-12 transition-transform">
+                    <ShieldQuestion className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h3 className="font-black uppercase italic tracking-tighter text-xl">Complete Your Verification</h3>
+                    <p className="text-white/80 text-sm font-medium">Unlock withdrawals and investment plans today.</p>
+                  </div>
+                </div>
+                <div className="bg-white/20 h-10 w-10 rounded-full flex items-center justify-center">
+                  <span className="text-white text-xl">→</span>
+                </div>
+              </div>
+            )}
 
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {cards.map((card, idx) => (

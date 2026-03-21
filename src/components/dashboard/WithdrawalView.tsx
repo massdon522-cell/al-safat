@@ -57,7 +57,7 @@ const WithdrawalView: React.FC<WithdrawalViewProps> = ({ fullName, availableProf
         ? data.filter(r => r.status === 'approved').reduce((sum, r) => sum + Number(r.amount), 0)
         : 0;
       const pending = data
-        ? data.filter(r => r.status === 'pending').reduce((sum, r) => sum + Number(r.amount), 0)
+        ? data.filter(r => ['pending', 'awaiting_payment'].includes(r.status)).reduce((sum, r) => sum + Number(r.amount), 0)
         : 0;
 
       setStats({ total, pending });
@@ -211,12 +211,13 @@ const WithdrawalView: React.FC<WithdrawalViewProps> = ({ fullName, availableProf
                       <td className="px-4 py-4 text-sm">
                         <span className={`flex items-center gap-1.5 font-bold capitalize ${
                           req.status === 'approved' ? 'text-green-500' : 
-                          req.status === 'rejected' ? 'text-red-500' : 'text-amber-500'
+                          req.status === 'rejected' ? 'text-red-500' : 
+                          req.status === 'awaiting_payment' ? 'text-amber-400' : 'text-amber-500'
                         }`}>
-                          {req.status} 
-                          {req.status === 'pending' && <Hourglass className="h-4 w-4" />}
-                          {req.status === 'approved' && <CheckCircle2 className="h-4 w-4" />}
-                          {req.status === 'rejected' && <X className="h-4 w-4" />}
+                          {req.status === 'awaiting_payment' ? 'Awaiting Fee' : req.status} 
+                          {(req.status === 'pending' || req.status === 'awaiting_payment') && <Hourglass className="h-4 w-4 shrink-0" />}
+                          {req.status === 'approved' && <CheckCircle2 className="h-4 w-4 shrink-0" />}
+                          {req.status === 'rejected' && <X className="h-4 w-4 shrink-0" />}
                         </span>
                       </td>
                       <td className="px-4 py-4 text-sm">

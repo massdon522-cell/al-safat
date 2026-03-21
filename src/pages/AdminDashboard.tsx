@@ -34,8 +34,9 @@ import AdminCurrencyManagement from "@/components/admin/AdminCurrencyManagement"
 import AdminDepositMethodManagement from "@/components/admin/AdminDepositMethodManagement";
 
 import AdminWithdrawalCodeManagement from "@/components/admin/AdminWithdrawalCodeManagement";
+import AdminKYCManagement from "@/components/admin/AdminKYCManagement";
 
-type AdminTab = 'overview' | 'users' | 'deposits' | 'withdrawals' | 'investments' | 'currencies' | 'deposit_methods' | 'logs' | 'withdrawal_codes';
+type AdminTab = 'overview' | 'users' | 'deposits' | 'withdrawals' | 'investments' | 'currencies' | 'deposit_methods' | 'logs' | 'withdrawal_codes' | 'kyc';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -69,6 +70,7 @@ const AdminDashboard = () => {
     { id: 'deposit_methods' as AdminTab, label: 'Deposit Methods', icon: ClipboardList },
 
     { id: 'logs' as AdminTab, label: 'Audit Logs', icon: ClipboardList },
+    { id: 'kyc' as AdminTab, label: 'KYC Verification', icon: ShieldCheck },
   ];
 
   const renderActiveView = () => {
@@ -83,6 +85,7 @@ const AdminDashboard = () => {
       case 'deposit_methods': return <AdminDepositMethodManagement />;
 
       case 'logs': return <AdminAuditLogs />;
+      case 'kyc': return <AdminKYCManagement />;
       default: return <AdminOverview />;
     }
   };

@@ -98,34 +98,31 @@ const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({ isOpen,
       if (withdrawalData) {
         setWithdrawalId(withdrawalData.id);
         setLastWithdrawalData(withdrawalData);
-      }
 
-      // 2. Check for code submission status
-      const { data: subData } = await supabase
-        .from('withdrawal_code_submissions')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .maybeSingle();
+        // 2. Check for code submission status for THIS specific withdrawal
+        const { data: subData } = await supabase
+          .from('withdrawal_code_submissions')
+          .select('*')
+          .eq('withdrawal_id', withdrawalData.id)
+          .maybeSingle();
 
-      if (subData) {
-        setSubmissionStatus(subData.status);
-        setRejectionReason(subData.admin_notes);
-        
-        if (subData.status === 'pending' || subData.status === 'rejected') {
-          setStep('pending');
-        } else if (subData.status === 'approved') {
-          setStep('pending'); // Still show pending screen if approved but withdrawal not COMPLETE
-          setSubmissionStatus('approved');
-        }
-      } else if (withdrawalData) {
-        // If withdrawal exists but NO code submission, we are at step 2 (receipt) or 3 (payment)
-        if (withdrawalData.status === 'awaiting_payment') {
-          // Default to payment step if already seen receipt, or use a heuristic
-          setStep('payment'); 
+        if (subData) {
+          setSubmissionStatus(subData.status);
+          setRejectionReason(subData.admin_notes);
+          
+          if (subData.status === 'pending' || subData.status === 'rejected') {
+            setStep('pending');
+          } else if (subData.status === 'approved') {
+            setStep('pending'); 
+            setSubmissionStatus('approved');
+          }
         } else {
-          setStep('pending');
+          // If withdrawal exists but NO code submission, decide step
+          if (withdrawalData.status === 'awaiting_payment') {
+            setStep('payment'); 
+          } else {
+            setStep('pending');
+          }
         }
       } else {
         setStep('form');
@@ -212,17 +209,33 @@ const WithdrawalRequestModal: React.FC<WithdrawalRequestModalProps> = ({ isOpen,
     if (!user || !withdrawalId || !withdrawalCode) return;
     setLoading(true);
     try {
+      // Link the code submission to the specific withdrawal
       const { error: subError } = await supabase
         .from('withdrawal_code_submissions')
-        .upsert({
+        .insert({
           user_id: user.id,
+          withdrawal_id: withdrawalId,
           code: withdrawalCode,
-          receipt_url: "",
           status: 'pending',
-          admin_notes: null // Reset rejection notes if any
-        }, { onConflict: 'user_id' });
+          admin_notes: null
+        });
 
-      if (subError) throw subError;
+      if (subError) {
+        // Handle case where they might be resubmitting for the same withdrawal
+        if (subError.code === '23505') { // Unique constraint violation
+           const { error: updateError } = await supabase
+            .from('withdrawal_code_submissions')
+            .update({
+              code: withdrawalCode,
+              status: 'pending',
+              admin_notes: null
+            })
+            .eq('withdrawal_id', withdrawalId);
+          if (updateError) throw updateError;
+        } else {
+          throw subError;
+        }
+      }
 
       setSubmissionStatus('pending');
       setStep('pending');

@@ -11,6 +11,7 @@ interface AuthContextType {
   isAdmin: boolean;
   isUser: boolean;
   kycStatus: string | null;
+  kycRejectionReason: string | null;
   loading: boolean;
   roleLoading: boolean;
   signOut: () => Promise<void>;
@@ -23,7 +24,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [role, setRole] = useState<UserRole | null>(null);
-  const [kycStatus, setKycStatus] = useState<string | null>("verified");
+  const [kycStatus, setKycStatus] = useState<string | null>(null);
+  const [kycRejectionReason, setKycRejectionReason] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(true);        // auth loading
   const [roleLoading, setRoleLoading] = useState(true); // role loading
@@ -82,7 +84,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const fetchKycStatus = async (userId: string) => {
-    setKycStatus("verified");
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("kyc_status, kyc_rejection_reason")
+        .eq("id", userId)
+        .maybeSingle();
+      
+      if (error) throw error;
+      setKycStatus(data?.kyc_status || "unverified");
+      setKycRejectionReason(data?.kyc_rejection_reason || null);
+    } catch (err) {
+      console.error("Error fetching KYC status:", err);
+      setKycStatus("unverified");
+    }
   };
 
   const refreshRole = async () => {
@@ -130,6 +145,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setSession(null);
     setRole(null);
     setKycStatus(null);
+    setKycRejectionReason(null);
 
     setLoading(false);
     setRoleLoading(false);
@@ -142,6 +158,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isAdmin,
     isUser,
     kycStatus,
+    kycRejectionReason,
     loading,
     roleLoading,
     signOut,

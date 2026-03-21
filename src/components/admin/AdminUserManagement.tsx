@@ -30,6 +30,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { 
   Select, 
   SelectContent, 
@@ -49,6 +50,7 @@ interface UserWithWallet {
   country: string;
   status: string;
   kyc_status: string;
+  kyc_rejection_reason?: string;
   currency: string;
   role: string;
   wallets: {
@@ -130,6 +132,7 @@ const AdminUserManagement = () => {
           country,
           status,
           kyc_status,
+          kyc_rejection_reason,
           currency,
           user_roles!user_id (role),
           wallets!user_id (balance, profit, total_deposits, total_withdrawals, total_investments)
@@ -177,6 +180,8 @@ const AdminUserManagement = () => {
           phone: editingUser.phone,
           country: editingUser.country,
           status: editingUser.status,
+          kyc_status: editingUser.kyc_status,
+          kyc_rejection_reason: editingUser.kyc_status === 'rejected' ? editingUser.kyc_rejection_reason : null,
           currency: editingUser.currency
         })
         .eq('id', editingUser.id);
@@ -476,7 +481,35 @@ const AdminUserManagement = () => {
                         </SelectContent>
                       </Select>
                     </div>
+                    <div className="space-y-2">
+                      <Label className="text-zinc-400 text-[10px] uppercase font-bold tracking-wider">KYC Verification Status</Label>
+                      <Select 
+                        value={editingUser.kyc_status} 
+                        onValueChange={(val) => setEditingUser({...editingUser, kyc_status: val})}
+                      >
+                        <SelectTrigger className="bg-zinc-900 border-white/5 font-bold h-11">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-zinc-950 border-white/10 text-white">
+                          <SelectItem value="unverified" className="text-zinc-500">UNVERIFIED</SelectItem>
+                          <SelectItem value="pending" className="text-amber-500">PENDING</SelectItem>
+                          <SelectItem value="verified" className="text-emerald-500">VERIFIED</SelectItem>
+                          <SelectItem value="rejected" className="text-red-500">REJECTED</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
+                  {editingUser.kyc_status === 'rejected' && (
+                    <div className="space-y-2 mt-4 animate-in slide-in-from-top-2 duration-200">
+                      <Label className="text-red-500 text-[10px] uppercase font-bold tracking-wider">Rejection Reason</Label>
+                      <Textarea 
+                        value={editingUser.kyc_rejection_reason || ""} 
+                        onChange={(e) => setEditingUser({...editingUser, kyc_rejection_reason: e.target.value})}
+                        placeholder="Provide reasons for identity rejection..."
+                        className="bg-zinc-900 border-white/5 focus:border-red-500/50 min-h-[80px]"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-4">

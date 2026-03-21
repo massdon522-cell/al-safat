@@ -48,6 +48,7 @@ const Sidebar: React.FC<SidebarProps> = ({ fullName, activeTab, onTabChange, onS
         <nav className="space-y-1">
           {[
             { id: "dashboard", icon: <LayoutDashboard className="h-5 w-5" />, label: "My Dashboard" },
+            { id: "verification", icon: <CheckCircle2 className="h-5 w-5" />, label: "Identity Verification" },
             { id: "deposit", icon: <ArrowDownLeft className="h-5 w-5" />, label: "Deposit" },
             { id: "withdrawal", icon: <ArrowUpRight className="h-5 w-5" />, label: "Withdrawal" },
             { id: "investment", icon: <CreditCard className="h-5 w-5" />, label: "Investment" },
